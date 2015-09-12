@@ -20,6 +20,10 @@ fi
 MOUNT_USER=`cat $MOUNT_CFG | grep user | cut -d= -f2`
 MOUNT_PASS=`cat $MOUNT_CFG | grep pass | cut -d= -f2`
 
+function print_usage() {
+		echo "usage: ./mount.sh hostname {start|stop} [ro|rw]"
+}
+
 function remove_dir() {
 	if [ -e $1 ]
 	then
@@ -59,6 +63,9 @@ then
 	then
 		PATTERN=vol
 	fi
+else 
+	print_usage
+	exit 0
 fi
 
 if [ $# -eq 3 ]
@@ -101,7 +108,7 @@ stop)
 	remove_dir $BASE_DIR/$HOST
 ;;
 *)
-	echo "usage: ./mount.sh hostname {start|stop} [ro|rw]"
+	print_usage
 	exit 0
 ;;
 esac
