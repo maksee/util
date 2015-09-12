@@ -20,6 +20,11 @@ fi
 MOUNT_USER=`cat $MOUNT_CFG | grep user | cut -d= -f2`
 MOUNT_PASS=`cat $MOUNT_CFG | grep pass | cut -d= -f2`
 
+function count_volumes() {
+	VOL_COUNT=`smbclient -L //$HOST.local -U $MOUNT_USER -N 2>&1 | grep ${PATTERN}.${ACCESS_TYPE} -c`
+	echo "${VOL_COUNT}"
+}
+
 function print_usage() {
 		echo "usage: ./mount.sh hostname {start|stop} [ro|rw]"
 }
@@ -81,7 +86,7 @@ home-stop)
 	sudo umount $BASE_DIR/$HOST/$MOUNT_USER
 ;;
 start)
-	VOL_COUNT=`smbclient -L //$HOST.local -U $MOUNT_USER -N 2>&1 | grep ${PATTERN}.${ACCESS_TYPE} -c`
+	VOL_COUNT=$(count_volumes)
 	echo "Number of volumes detected: ${VOL_COUNT}"
 	for i in `seq 1 $VOL_COUNT`
 	do
@@ -92,7 +97,7 @@ start)
 	done
 ;;
 stop)
-	VOL_COUNT=`smbclient -L //$HOST.local -U $MOUNT_USER -N 2>&1 | grep ${PATTERN}.${ACCESS_TYPE} -c`
+	VOL_COUNT=$(count_volumes)
 	echo "Number of volumes detected: ${VOL_COUNT}"
 	for i in `seq 1 $VOL_COUNT`
 	do
