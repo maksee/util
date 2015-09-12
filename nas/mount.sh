@@ -9,7 +9,7 @@
 VERSION=1.0.9
 MOUNT_CFG=$HOME/.mount.cfg
 ACCESS_TYPE=ro
-BASE_DIR=net
+BASE_DIR=$HOME/net
 
 if [ ! -f ~/.mount.cfg ]
 then
