@@ -90,10 +90,10 @@ start)
 	echo "Number of volumes detected: ${VOL_COUNT}"
 	for i in `seq 1 $VOL_COUNT`
 	do
-		DIR=${PATTERN}${i}${ACCESS_TYPE}
+		DIR=${PATTERN}${i}
 		DIR_FULL=$BASE_DIR/${HOST}/${DIR}
 		create_dir ${DIR_FULL}
-		sudo mount -t cifs //$HOST.local/${DIR} ${DIR_FULL} -ousername=$MOUNT_USER,password=$MOUNT_PASS
+		sudo mount -t cifs //$HOST.local/${DIR}${ACCESS_TYPE} ${DIR_FULL} -ousername=$MOUNT_USER,password=$MOUNT_PASS
 	done
 ;;
 stop)
@@ -101,7 +101,7 @@ stop)
 	echo "Number of volumes detected: ${VOL_COUNT}"
 	for i in `seq 1 $VOL_COUNT`
 	do
-		DIR=${PATTERN}${i}${ACCESS_TYPE}
+		DIR=${PATTERN}${i}
 		DIR_FULL=$BASE_DIR/${HOST}/${DIR}
 		if [ -e ${DIR_FULL} ]
 		then 
