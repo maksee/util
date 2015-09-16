@@ -35,12 +35,12 @@ function remove_dir() {
 		rmdir $1
 		if [ $? -eq 0 ]
 		then
-			echo "Directory $1 removed successfully"
+			echo " removed"
 		else
-			echo "Directory $1 could not be removed"
+			echo " could not be removed"
 		fi
 	else
-		echo "Directory $1 does not exist"
+		echo " does not exist"
 	fi
 }
 
@@ -50,7 +50,8 @@ function create_dir() {
 		mkdir -p $1
 		if [ $? -eq 0 ]
 		then
-			echo "Directory $1 created successfully"
+			#echo "Directory $1 created successfully"
+			echo -n ""
 		else
 			echo "Directory $1 could not be created"
 		fi
@@ -103,13 +104,17 @@ stop)
 	do
 		DIR=${PATTERN}${i}
 		DIR_FULL=$BASE_DIR/${HOST}/${DIR}
+		echo -n "Directory ${DIR_FULL}:"
 		if [ -e ${DIR_FULL} ]
 		then 
 			sudo umount ${DIR_FULL}
-			echo "Directory ${DIR_FULL} unmounted successfully"
+			echo -n " unmounted"
+                else
+			echo -n " could not be unmounted"
 		fi
 		remove_dir ${DIR_FULL}
 	done
+	echo -n "Directory ${BASE_DIR}/${HOST}:"
 	remove_dir $BASE_DIR/$HOST
 ;;
 *)
