@@ -26,7 +26,7 @@ function count_volumes() {
 }
 
 function print_usage() {
-		echo "usage: ./mount.sh hostname {start|stop} [ro|rw]"
+		echo "usage: ./mount.sh hostname {start|stop|status} [ro|rw]"
 }
 
 function remove_dir() {
@@ -59,6 +59,16 @@ function create_dir() {
 		echo "Directory $1 already exists" 
 	fi
 }
+
+if [ $# -eq 1 ]
+then
+	if [ $1 = "status" ]
+	then
+		PATTERN=vol
+		df -h | grep $PATTERN
+		exit 0
+	fi
+fi
 
 if [ $# -eq 2 -o $# -eq 3 ]
 then
