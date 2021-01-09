@@ -12,6 +12,8 @@ ACCESS_TYPE=ro
 BASE_DIR=$HOME/net
 # vol0, vol1, ...
 START_IDX=0
+UID=$(id -u)
+GID=$(id -g)
 
 if [ ! -f ~/.mount.cfg ]
 then
@@ -98,7 +100,7 @@ start)
 		DIR_FULL=$BASE_DIR/${HOST}/${DIR}
 		create_dir ${DIR_FULL}
 		#echo "sudo mount -t cifs //$HOST.local/${DIR}${ACCESS_TYPE} ${DIR_FULL} -ousername=$MOUNT_USER,password=$MOUNT_PASS"
-		sudo mount -t cifs //$HOST.local/${DIR}${ACCESS_TYPE} ${DIR_FULL} -ousername=$MOUNT_USER,password=$MOUNT_PASS
+		sudo mount -t cifs //$HOST.local/${DIR}${ACCESS_TYPE} ${DIR_FULL} -ousername=$MOUNT_USER,password=$MOUNT_PASS,uid=$UID,gid=$GID
 	done
 ;;
 stop)
