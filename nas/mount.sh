@@ -76,6 +76,7 @@ then
 	if [ $1 = "status" ]
 	then
 		pattern=vol
+		df -h | head -1
 		df -h | grep $pattern
 		exit 0
 	fi
