@@ -4,7 +4,7 @@
 #
 # Changed from smbmount to mount -t cifs
 #
-# Package required: cifs-utils
+# Package required: smbclient cifs-utils
 
 VERSION=1.0.10
 MOUNT_CFG=$HOME/.mount.cfg
