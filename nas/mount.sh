@@ -6,27 +6,34 @@
 #
 # Package required: smbclient cifs-utils
 
-VERSION=1.0.10
-MOUNT_CFG=$HOME/.mount.cfg
-ACCESS_TYPE=ro
-BASE_DIR=$HOME/net
+version=1.0.10
+mount_cfg=$HOME/.mount.cfg
+access_type=ro
+base_dir=$HOME/net
 # vol0, vol1, ...
-START_IDX=0
-UID=$(id -u)
-GID=$(id -g)
+start_idx=0
+myuid=$(id -u)
+mygid=$(id -g)
 
 if [ ! -f ~/.mount.cfg ]
 then
-	echo "Missing config file: $MOUNT_CFG"
+	echo "Missing config file: $mount_cfg"
 	exit 1
 fi 
 
-MOUNT_USER=`cat $MOUNT_CFG | grep username | cut -d= -f2`
-MOUNT_PASS=`cat $MOUNT_CFG | grep password | cut -d= -f2`
+mount_user=`cat $mount_cfg | grep username | cut -d= -f2`
+mount_pass=`cat $mount_cfg | grep password | cut -d= -f2`
 
 function count_volumes() {
-	VOL_COUNT=`smbclient -L //$HOST.local -U $MOUNT_USER -A $MOUNT_CFG 2>&1 | grep ${PATTERN}.${ACCESS_TYPE} -c`
-	echo "${VOL_COUNT}"
+	vol_count=`smbclient -L //$host.local -U $mount_user -A $mount_cfg 2>&1 | grep ${pattern}.${access_type} -c`
+	echo "${vol_count}"
+}
+
+function get_loop_param() {
+	vol_count=$(count_volumes)
+	stop_idx=`expr $start_idx + $vol_count`
+	stop_idx=`expr $stop_idx - 1`
+	echo "Volumes: ${vol_count}. Loop ${start_idx}-${stop_idx}"
 }
 
 function print_usage() {
@@ -68,18 +75,17 @@ if [ $# -eq 1 ]
 then
 	if [ $1 = "status" ]
 	then
-		PATTERN=vol
-		df -h | grep $PATTERN
+		pattern=vol
+		df -h | grep $pattern
 		exit 0
 	fi
 fi
 
 if [ $# -eq 2 -o $# -eq 3 ]
 then
-	echo "$0 version $VERSION"
-	HOST=$1
-	PATTERN=vol
-	echo "HOST=$HOST PATTERN=$PATTERN"
+	echo "$0 version $version"
+	host=$1
+	pattern=vol
 else 
 	print_usage
 	exit 0
@@ -87,47 +93,44 @@ fi
 
 if [ $# -eq 3 ]
 then
-	ACCESS_TYPE=$3
+	access_type=$3
 fi
 
 case $2 in 
 start)
-	VOL_COUNT=`expr $(count_volumes) - 1`
-	echo "Number of volumes detected: ${VOL_COUNT}"
-	for i in `seq $START_IDX $VOL_COUNT`
+	get_loop_param
+	for i in `seq $start_idx $stop_idx`
 	do
-		DIR=${PATTERN}${i}
-		DIR_FULL=$BASE_DIR/${HOST}/${DIR}
-		create_dir ${DIR_FULL}
-		#echo "sudo mount -t cifs //$HOST.local/${DIR}${ACCESS_TYPE} ${DIR_FULL} -ousername=$MOUNT_USER,password=$MOUNT_PASS"
-		sudo mount -t cifs //$HOST.local/${DIR}${ACCESS_TYPE} ${DIR_FULL} -ousername=$MOUNT_USER,password=$MOUNT_PASS,uid=$UID,gid=$GID
+		dir_name=${pattern}${i}
+		dir_full=$base_dir/${host}/${dir_name}
+		create_dir ${dir_full}
+		sudo mount -t cifs //$host.local/${dir_name}${access_type} ${dir_full} -ousername=$mount_user,password=$mount_pass,uid=$myuid,gid=$mygid
 	done
 ;;
 stop)
-	VOL_COUNT=`expr $(count_volumes) - 1`
-	echo "Number of volumes detected: ${VOL_COUNT}"
-	for i in `seq $START_IDX $VOL_COUNT`
+	get_loop_param
+	for i in `seq $start_idx $stop_idx`
 	do
-		DIR=${PATTERN}${i}
-		DIR_FULL=$BASE_DIR/${HOST}/${DIR}
-		echo -n "Directory ${DIR_FULL}:"
-		if [ -e ${DIR_FULL} ]
+		dir_name=${pattern}${i}
+		dir_full=$base_dir/${host}/${dir_name}
+		echo -n "Directory ${dir_full}:"
+		if [ -e ${dir_full} ]
 		then 
-			sudo umount ${DIR_FULL}
+			sudo umount ${dir_full}
 			echo -n " unmounted"
                 else
 			echo -n " could not be unmounted"
 		fi
-		remove_dir ${DIR_FULL}
+		remove_dir ${dir_full}
 	done
-	echo -n "Directory ${BASE_DIR}/${HOST}:"
-	remove_dir $BASE_DIR/$HOST
-	echo -n "Directory ${BASE_DIR}:"
-	remove_dir $BASE_DIR
+	echo -n "Directory ${base_dir}/${host}:"
+	remove_dir $base_dir/$host
+	echo -n "Directory ${base_dir}:"
+	remove_dir $base_dir
 ;;
 *)
 	print_usage
 	exit 0
 ;;
 esac
-df -h | grep $PATTERN
+df -h | grep $pattern
