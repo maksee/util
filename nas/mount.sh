@@ -10,8 +10,8 @@ version=1.0.10
 mount_cfg=$HOME/.mount.cfg
 access_type=ro
 base_dir=$HOME/net
-# vol0, vol1, ...
-start_idx=0
+# vol1, vol2, ...
+start_idx=1
 myuid=$(id -u)
 mygid=$(id -g)
 
@@ -37,7 +37,7 @@ function get_loop_param() {
 }
 
 function print_usage() {
-		echo "usage: ./mount.sh hostname {start|stop|status} [ro|rw]"
+	echo "usage: ./mount.sh hostname {start|stop|status} [ro|rw]"
 }
 
 function remove_dir() {
