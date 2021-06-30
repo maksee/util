@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NICS=$(ifconfig | grep ^en | awk -F: '{print $1}' | tr '\n' ' ')
+NICS=$(ifconfig | grep '^en\|^wlx' | awk -F: '{print $1}' | tr '\n' ' ')
 for i in $NICS
 do
         echo -n $i
