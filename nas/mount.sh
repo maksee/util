@@ -6,6 +6,19 @@
 #
 # Package required: smbclient cifs-utils
 
+function check_package() {
+	if [ $(dpkg --get-selections | grep -c $1) -eq 0 ]
+	then
+		echo "sudo apt-get install $1"
+		exit 1
+	fi
+}
+
+for i in smbclient cifs-utils
+do
+	check_package $i
+done
+
 version=1.0.10
 mount_cfg=$HOME/.mount.cfg
 access_type=ro
