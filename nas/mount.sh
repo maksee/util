@@ -7,7 +7,7 @@
 # Package required: smbclient cifs-utils
 
 function check_package() {
-	if [ $(dpkg --get-selections | grep -c $1) -eq 0 ]
+	if [ $(dpkg --get-selections | grep -c ^$1) -eq 0 ]
 	then
 		echo "sudo apt-get install $1"
 		exit 1
@@ -19,7 +19,7 @@ do
 	check_package $i
 done
 
-version=1.0.10
+version=1.0.11
 mount_cfg=$HOME/.mount.cfg
 access_type=ro
 base_dir=$HOME/net
@@ -28,11 +28,18 @@ start_idx=1
 myuid=$(id -u)
 mygid=$(id -g)
 
-if [ ! -f ~/.mount.cfg ]
+if [ ! -f $mount_cfg ]
 then
 	echo "Missing config file: $mount_cfg"
 	exit 1
 fi 
+perm=$(ls -al $mount_cfg | awk '{print $1}')
+perm_req="-rw-------"
+if [[ "${perm}" != "${perm_req}" ]]
+then
+	echo "File ${mount_cfg} has wrong permissions: ${perm}. Required: ${perm_req}."
+	exit 1
+fi
 
 mount_user=`cat $mount_cfg | grep username | cut -d= -f2`
 mount_pass=`cat $mount_cfg | grep password | cut -d= -f2`
