@@ -3,16 +3,23 @@
 # (C) Kazimierz Balos
 #
 # Changed from smbmount to mount -t cifs
-#
-# Package required: smbclient cifs-utils
 
+missing_pkgs=""
 function check_package() {
-	if [ $(dpkg --get-selections | grep -c ^$1) -eq 0 ]
-	then
-		echo "sudo apt-get install $1"
-		exit 1
-	fi
+        if [ $(dpkg --get-selections | grep -v deinstall | grep -c ^$1) -eq 0 ]
+        then
+                missing_pkgs="${missing_pkgs} $1"
+        fi
 }
+for i in smbclient cifs-utils
+do
+        check_package $i
+done
+if [ "${missing_pkgs}" ]
+then
+        echo "sudo apt-get install${missing_pkgs}"
+        exit 1
+fi
 
 for i in smbclient cifs-utils
 do
