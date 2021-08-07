@@ -49,7 +49,7 @@ do
 		elif [[ $model == "SanDisk" ]]
 		then
 			:
-		elif [[ "SSDPR" =~ $model ]]
+		elif [[ $model =~ "SSDPR" ]]
 		then
 			echo -n "GBW: "
 			smartctl_info=$(sudo smartctl -a $i | tr '\n' '@')
