@@ -4,6 +4,7 @@
 #
 # Changed from smbmount to mount -t cifs
 
+debug=0
 missing_pkgs=""
 function check_package() {
         if [ $(dpkg --get-selections | grep -v deinstall | grep -c ^$1) -eq 0 ]
@@ -132,7 +133,13 @@ start)
 		dir_name=${pattern}${i}
 		dir_full=$base_dir/${host}/${dir_name}
 		create_dir ${dir_full}
-		sudo mount -t cifs //$host.local/${dir_name}${access_type} ${dir_full} -ousername=$mount_user,password=$mount_pass,uid=$myuid,gid=$mygid
+		cmd="sudo mount -t cifs //$host.local/${dir_name}${access_type} ${dir_full} -ousername=$mount_user,password=$mount_pass,uid=$myuid,gid=$mygid"
+		if [ ${debug} -eq 1 ]
+		then
+			echo ${cmd}
+		else
+			${cmd}
+		fi
 	done
 ;;
 stop)
