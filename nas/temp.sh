@@ -97,13 +97,13 @@ do
 			fi
 			if [ $valr_exists -eq 1 ] && [ $valw_exists -eq 1 ]
 			then
-				printf "%s%6s TBW  %6s TBR" "$margin" $valw $valr
+				printf "%s%7s TBW  %7s TBR" "$margin" $valw $valr
 			elif [ $valw_exists -eq 1 ]
 			then
-				printf "%s%6s TBW" "$margin" $valw
+				printf "%s%7s TBW" "$margin" $valw
 			elif [ $valr_exists -eq 1 ]
 			then
-				printf "%s%6s TBR" "$margin" $valr
+				printf "%s%7s TBR" "$margin" $valr
 			fi
 		fi
 	else
