@@ -9,7 +9,7 @@ for i in $(ls /dev/nvme[0-9])
 do
 	type="Unknown"
 	lineend=0
-	temp=$(sudo nvme smart-log $i | grep -i temp | grep -v 'Warning\|Critical' | awk '{print $3}')
+	temp=$(sudo nvme smart-log $i | grep -m 1 -i temp | grep -v 'Warning\|Critical' | awk '{print $3}')
 	model=$(sudo smartctl -a /dev/nvme0 | grep "Model Number" | awk '{print $3}')
 	if [[ "$i" =~ "nvme" ]]
 	then
@@ -20,6 +20,12 @@ do
 		smartctl_info=$(sudo smartctl -a $i | tr '\n' '@')
 		drive_supp=0
 		if [[ $model == "KINGSTON" ]]
+		then
+			drive_supp=1
+			unitw="Data Units Written"
+			unitr="Data Units Read"
+			formula="%s"
+		elif [[ $model == "ADATA" ]]
 		then
 			drive_supp=1
 			unitw="Data Units Written"
@@ -38,6 +44,7 @@ do
 			then
 				valw_exists=1
 				valw=$(echo ${smartctl_info} | tr '@' '\n' | grep "$unitw" | awk '{print $5}' | awk -F[ '{print $2}' | tr '\n' ' ')
+				valw=$(echo $valw | sed 's/,/./')
 				valw=$(printf "$prefix$formula$suffix\n" $valw | bc)
 				# fix lack of leading zero in bc
 				valw=$(echo -n $valw | sed -e 's/^-\./-0./' -e 's/^\./0./')
@@ -46,6 +53,7 @@ do
 			then
 				valr_exists=1
 				valr=$(echo ${smartctl_info} | tr '@' '\n' | grep "$unitr" | awk '{print $5}' | awk -F[ '{print $2}' | tr '\n' ' ')
+				valr=$(echo $valr | sed 's/,/./')
 				valr=$(printf "$prefix$formula$suffix\n" $valr | bc)
 				# fix lack of leading zero in bc
 				valr=$(echo -n $valr | sed -e 's/^-\./-0./' -e 's/^\./0./')
