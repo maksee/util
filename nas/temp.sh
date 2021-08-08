@@ -64,17 +64,40 @@ do
 			unitr="Total_LBAs_Read"
 			labelw="LBAs(512B)_W"
 			labelr="LBAs(512B)_R"
-			formula="(512 * %s)/(1024 * 1024 * 1024)"
+			# theoretically, this should be 512B:
+			# formula="(512 * %s)/(1024 * 1024 * 1024)"
+			# however, tested practically with Goodram Optimum Tool
+			# and it displays GIGABYTES WRITTEN 1145GB only when we divide this value by 1000, not 1024
+			formula="%s/1000"
 		fi
 		if [ $drive_supp -eq 1 ]
 		then
-			scale=2
+			scale=3
 			prefix="scale=$scale"
-			valw=$(echo ${smartctl_info} | tr '@' '\n' | grep $unitw | awk '{print $10}' | tr '\n' ' ')
-			valr=$(echo ${smartctl_info} | tr '@' '\n' | grep $unitr | awk '{print $10}' | tr '\n' ' ')
-			valw=$(printf "$prefix\n$formula\n" $valw | bc)
-			valr=$(printf "$prefix\n$formula\n" $valr | bc)
-			printf " %6s TBW  %6s TBW" $valw $valr
+			valw_exists=0
+			valr_exists=0
+			if [ $(echo ${smartctl_info} | tr '@' '\n' | grep -c $unitw) -eq 1 ]
+			then
+				valw_exists=1
+				valw=$(echo ${smartctl_info} | tr '@' '\n' | grep $unitw | awk '{print $10}' | tr '\n' ' ')
+				valw=$(printf "$prefix\n$formula\n" $valw | bc)
+			fi
+			if [ $(echo ${smartctl_info} | tr '@' '\n' | grep -c $unitr) -eq 1 ]
+			then
+				valr_exists=1
+				valr=$(echo ${smartctl_info} | tr '@' '\n' | grep $unitr | awk '{print $10}' | tr '\n' ' ')
+				valr=$(printf "$prefix\n$formula\n" $valr | bc)
+			fi
+			if [ $valr_exists -eq 1 ] && [ $valw_exists -eq 1 ]
+			then
+				printf " %6s TBW  %6s TBR" $valw $valr
+			elif [ $valw_exists -eq 1 ]
+			then
+				printf " %6s TBW" $valw
+			elif [ $valr_exists -eq 1 ]
+			then
+				printf " %6s TBR" $valr
+			fi
 		fi
 	else
 		echo ""
