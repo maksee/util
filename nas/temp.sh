@@ -29,6 +29,7 @@ do
 	fi
 	sudo smartctl -A $drive | grep "Data Units"
 done
+
 for i in $(ls /dev/sd[a-z])
 do
 	sudo hddtemp -w $i | tr '\n' ' '
@@ -42,30 +43,38 @@ do
 		if [[ $model == "ADATA" ]]
 		then
 			drive_supp=1
-			valw="Host_Writes_32MiB"
-			valr="Host_Reads_32MiB"
+			unitw="Host_Writes_32MiB"
+			unitr="Host_Reads_32MiB"
 			labelw="32MiBW"
 			labelr="32MiBR"
+			formula="(32 * %s)/(1024 * 1024)"
 		elif [[ $model == "SanDisk" ]]
 		then
 			drive_supp=1
-			valw="Lifetime_Writes_GiB"
-			valr="Lifetime_Reads_GiB"
+			unitw="Lifetime_Writes_GiB"
+			unitr="Lifetime_Reads_GiB"
 			labelw="GiBW"
 			labelr="GiBR"
+			formula="%s/1024"
 			:
 		elif [[ $model =~ "SSDPR" ]]
 		then
 			drive_supp=1
-			valw="Total_LBAs_Written"
-			valr="Total_LBAs_Read"
+			unitw="Total_LBAs_Written"
+			unitr="Total_LBAs_Read"
 			labelw="LBAs(512B)_W"
 			labelr="LBAs(512B)_R"
+			formula="(512 * %s)/(1024 * 1024 * 1024)"
 		fi
 		if [ $drive_supp -eq 1 ]
 		then
-			echo -n "$labelw: "; echo ${smartctl_info} | tr '@' '\n' | grep $valw | awk '{print $10}' | tr '\n' ' '
-			echo -n "$labelr: "; echo ${smartctl_info} | tr '@' '\n' | grep $valr | awk '{print $10}' | tr '\n' ' '
+			scale=2
+			prefix="scale=$scale"
+			valw=$(echo ${smartctl_info} | tr '@' '\n' | grep $unitw | awk '{print $10}' | tr '\n' ' ')
+			valr=$(echo ${smartctl_info} | tr '@' '\n' | grep $unitr | awk '{print $10}' | tr '\n' ' ')
+			valw=$(printf "$prefix\n$formula\n" $valw | bc)
+			valr=$(printf "$prefix\n$formula\n" $valr | bc)
+			printf " %6s TBW  %6s TBW" $valw $valr
 		fi
 	else
 		echo ""
