@@ -1,6 +1,7 @@
 #!/bin/bash
 
-./pkgs.sh
-sensors | grep 'fan[245]\|Core'
-./get-nvme.sh
-./get-ssd.sh
+dirnm=$(dirname $0)
+$dirnm/pkgs.sh
+$dirnm/cpu.sh
+$dirnm/get-nvme.sh
+$dirnm/get-ssd.sh
