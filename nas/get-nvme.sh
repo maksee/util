@@ -1,3 +1,10 @@
+#!/bin/bash
+
+if ! [ -e /dev/nvme0 ]
+then
+	exit 0
+fi
+
 for i in $(ls /dev/nvme[0-9])
 do
 	type="Unknown"

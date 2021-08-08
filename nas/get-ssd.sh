@@ -1,3 +1,5 @@
+#!/bin/bash
+
 for i in $(ls /dev/sd[a-z])
 do
 	sudo hddtemp -w $i | tr '\n' ' '
