@@ -7,7 +7,7 @@ function check_package() {
                 missing_pkgs="${missing_pkgs} $1"
         fi
 }
-for i in smbclient cifs-utils lsscsi
+for i in smbclient cifs-utils lsscsi smartmontools hddtemp lm-sensors nvme-cli wcstools
 do
         check_package $i
 done
