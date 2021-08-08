@@ -78,6 +78,7 @@ do
 			suffix="+(0.1-0.1)"
 			valw_exists=0
 			valr_exists=0
+			margin=" "
 			if [ $(echo ${smartctl_info} | tr '@' '\n' | grep -c $unitw) -eq 1 ]
 			then
 				valw_exists=1
@@ -96,13 +97,13 @@ do
 			fi
 			if [ $valr_exists -eq 1 ] && [ $valw_exists -eq 1 ]
 			then
-				printf "%6s TBW  %6s TBR" $valw $valr
+				printf "%s%6s TBW  %6s TBR" "$margin" $valw $valr
 			elif [ $valw_exists -eq 1 ]
 			then
-				printf "%6s TBW" $valw
+				printf "%s%6s TBW" "$margin" $valw
 			elif [ $valr_exists -eq 1 ]
 			then
-				printf "%6s TBR" $valr
+				printf "%s%6s TBR" "$margin" $valr
 			fi
 		fi
 	else
