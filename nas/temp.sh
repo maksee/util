@@ -45,16 +45,12 @@ do
 			drive_supp=1
 			unitw="Host_Writes_32MiB"
 			unitr="Host_Reads_32MiB"
-			labelw="32MiBW"
-			labelr="32MiBR"
 			formula="(32 * %s)/(1024 * 1024)"
 		elif [[ $model == "SanDisk" ]]
 		then
 			drive_supp=1
 			unitw="Lifetime_Writes_GiB"
 			unitr="Lifetime_Reads_GiB"
-			labelw="GiBW"
-			labelr="GiBR"
 			formula="%s/1024"
 			:
 		elif [[ $model =~ "SSDPR" ]]
@@ -62,8 +58,6 @@ do
 			drive_supp=1
 			unitw="Total_LBAs_Written"
 			unitr="Total_LBAs_Read"
-			labelw="LBAs(512B)_W"
-			labelr="LBAs(512B)_R"
 			formula="(512 * %s)/(1024 * 1024 * 1024)"
 		fi
 		if [ $drive_supp -eq 1 ]
