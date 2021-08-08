@@ -22,11 +22,6 @@ then
         exit 1
 fi
 
-for i in smbclient cifs-utils
-do
-	check_package $i
-done
-
 version=1.0.11
 mount_cfg=$HOME/.mount.cfg
 access_type=ro

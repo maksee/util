@@ -37,27 +37,35 @@ do
 	if [[ "$type" == "Solid State Device" ]]
 	then
 		model=$(sudo hdparm -i $i | grep Model | awk '{print $1}' | awk -F= '{print $2}')
+		smartctl_info=$(sudo smartctl -a $i | tr '\n' '@')
+		drive_supp=0
 		if [[ $model == "ADATA" ]]
 		then
-			echo -n "HW_32MiB: "
-			smartctl_info=$(sudo smartctl -a $i | tr '\n' '@')
-			echo ${smartctl_info} | tr '@' '\n' | grep Host_Writes_32MiB | awk '{print $10}' | tr '\n' ' '
-			echo -n "HR_32MiB: "
-			echo ${smartctl_info} | tr '@' '\n' | grep Host_Reads_32MiB | awk '{print $10}' | tr '\n' ' '
-			echo -n "TW_32MiB: "
-			echo ${smartctl_info} | tr '@' '\n' | grep TLC_Writes_32MiB | awk '{print $10}' | tr '\n' ' '
+			drive_supp=1
+			valw="Host_Writes_32MiB"
+			valr="Host_Reads_32MiB"
+			labelw="32MiBW"
+			labelr="32MiBR"
 		elif [[ $model == "SanDisk" ]]
 		then
+			drive_supp=1
+			valw="Lifetime_Writes_GiB"
+			valr="Lifetime_Reads_GiB"
+			labelw="GiBW"
+			labelr="GiBR"
 			:
 		elif [[ $model =~ "SSDPR" ]]
 		then
-			echo -n "GBW: "
-			smartctl_info=$(sudo smartctl -a $i | tr '\n' '@')
-			echo ${smartctl_info} | tr '@' '\n' | grep Total_LBAs_Written | awk '{print $10}' | tr '\n' ' '
-			echo -n "GBR: "
-			echo ${smartctl_info} | tr '@' '\n' | grep Total_LBAs_Read | awk '{print $10}' | tr '\n' ' '
-		else
-			:
+			drive_supp=1
+			valw="Total_LBAs_Written"
+			valr="Total_LBAs_Read"
+			labelw="LBAs(512B)_W"
+			labelr="LBAs(512B)_R"
+		fi
+		if [ $drive_supp -eq 1 ]
+		then
+			echo -n "$labelw: "; echo ${smartctl_info} | tr '@' '\n' | grep $valw | awk '{print $10}' | tr '\n' ' '
+			echo -n "$labelr: "; echo ${smartctl_info} | tr '@' '\n' | grep $valr | awk '{print $10}' | tr '\n' ' '
 		fi
 	else
 		echo ""
