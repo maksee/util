@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if ! [ -e /dev/sda ]
+then
+	exit 0
+fi
+
 for i in $(ls /dev/sd[a-z])
 do
 	sudo hddtemp -w $i | tr '\n' ' '
