@@ -8,6 +8,6 @@ how to
 
 Add:
 
-source $HOME/workspace/util/profile
+    source $HOME/workspace/util/profile
 
 to .profile
