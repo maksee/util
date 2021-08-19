@@ -12,7 +12,6 @@ do
 	type=$(sudo hdparm -I $i | grep -i 'Nominal Media Rotation Rate' | awk -F: '{print $2}' | sed 's/^ //g')
 	if [[ "$type" == "Solid State Device" ]]
 	then
-		#model=$(sudo hdparm -i $i | grep Model | awk '{print $1}' | awk -F= '{print $2}')
 		smartctl_info=$(sudo smartctl -a $i | tr '\n' '@')
 		model=$(echo ${smartctl_info} | tr '@' '\n' | grep "Device Model" | awk '{print $3}')
 		drive_supp=0

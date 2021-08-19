@@ -7,7 +7,8 @@ function check_package() {
                 missing_pkgs="${missing_pkgs} $1"
         fi
 }
-for i in smbclient cifs-utils lsscsi smartmontools hddtemp lm-sensors nvme-cli wcstools ethtool
+# ncdu is useful to spot sparse file - it shows actual space occupied by a file
+for i in smbclient cifs-utils lsscsi smartmontools hddtemp lm-sensors nvme-cli wcstools ethtool ncdu
 do
         check_package $i
 done
