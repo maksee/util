@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd /home/kbalos/workspace/chia-blockchain
+cd $USER/workspace/chia-blockchain
 . ./activate
 chia start harvester
