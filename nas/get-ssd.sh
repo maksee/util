@@ -7,7 +7,7 @@ fi
 
 for i in $(ls /dev/sd[a-z])
 do
-	sudo hddtemp -w $i | tr '\n' ' '
+	sudo hddtemp -w $i 2>&1 | sed '/WARNING/d' | tr '\n' ' '
 	lineend=0
 	type=$(sudo hdparm -I $i | grep -i 'Nominal Media Rotation Rate' | awk -F: '{print $2}' | sed 's/^ //g')
 	if [[ "$type" == "Solid State Device" ]]
