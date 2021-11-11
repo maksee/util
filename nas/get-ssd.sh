@@ -15,7 +15,13 @@ do
 		smartctl_info=$(sudo smartctl -a $i | tr '\n' '@')
 		model=$(echo ${smartctl_info} | tr '@' '\n' | grep "Device Model" | awk '{print $3}')
 		drive_supp=0
-		if [[ $model == "ADATA" ]]
+		if [[ $model == "Samsung" ]]
+		then
+			drive_supp=1
+			unitw="Total_LBAs_Written"
+			unitr="Total_LBAs_Read"
+			formula="(512 * %s)/(1024 * 1024 * 1024 * 1024)"
+		elif [[ $model == "ADATA" ]]
 		then
 			drive_supp=1
 			unitw="Host_Writes_32MiB"
