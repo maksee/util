@@ -10,7 +10,7 @@ do
 	type="Unknown"
 	lineend=0
 	temp=$(sudo nvme smart-log $i | grep -m 1 -i temp | grep -v 'Warning\|Critical' | awk '{print $3}')
-	model=$(sudo smartctl -a /dev/nvme0 | grep "Model Number" | awk '{print $3}')
+	model=$(sudo smartctl -a $i | grep "Model Number" | awk '{print $3}')
 	if [[ "$i" =~ "nvme" ]]
 	then
 		type="Solid State Device"
@@ -19,7 +19,13 @@ do
 	then
 		smartctl_info=$(sudo smartctl -a $i | tr '\n' '@')
 		drive_supp=0
-		if [[ $model == "KINGSTON" ]]
+		if [[ $model == "Samsung" ]]
+		then
+			drive_supp=1
+			unitw="Data Units Written"
+			unitr="Data Units Read"
+			formula="%s / 1024"
+		elif [[ $model == "KINGSTON" ]]
 		then
 			drive_supp=1
 			unitw="Data Units Written"
@@ -60,13 +66,13 @@ do
 			fi
 			if [ $valr_exists -eq 1 ] && [ $valw_exists -eq 1 ]
 			then
-				printf "$i: %s°C %7s TBW  %7s TBR" "$temp" $valw $valr
+				printf "$i: %s°C %7s TBW  %7s TBR ($model)" "$temp" $valw $valr
 			elif [ $valw_exists -eq 1 ]
 			then
-				printf "$i: %s°C %7s TBW" "$temp" $valw
+				printf "$i: %s°C %7s TBW ($model)" "$temp" $valw
 			elif [ $valr_exists -eq 1 ]
 			then
-				printf "$i: %s°C %7s TBR" "$temp" $valr
+				printf "$i: %s°C %7s TBR ($model)" "$temp" $valr
 			fi
 		fi
 	else
