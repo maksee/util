@@ -22,7 +22,7 @@ then
         exit 1
 fi
 
-version=1.0.11
+version=1.0.12
 mount_cfg=$HOME/.mount.cfg
 access_type=ro
 base_dir=$HOME/net
@@ -53,6 +53,11 @@ function count_volumes() {
 }
 
 function get_loop_param() {
+	pattern=vol
+	if [ $(smbclient -L //$host.local -U $mount_user -A $mount_cfg 2>&1 | grep -c ${pattern}0${access_type}) -eq 1 ]
+	then
+		start_idx=0
+	fi
 	vol_count=$(count_volumes)
 	stop_idx=`expr $start_idx + $vol_count`
 	stop_idx=`expr $stop_idx - 1`
