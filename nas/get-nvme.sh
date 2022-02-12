@@ -66,13 +66,13 @@ do
 			fi
 			if [ $valr_exists -eq 1 ] && [ $valw_exists -eq 1 ]
 			then
-				printf "$i: %s°C %7s TBW  %7s TBR ($model)" "$temp" $valw $valr
+				printf "$i: %s°C %7s TBW  %7s TBR $model" "$temp" $valw $valr
 			elif [ $valw_exists -eq 1 ]
 			then
-				printf "$i: %s°C %7s TBW ($model)" "$temp" $valw
+				printf "$i: %s°C %7s TBW $model" "$temp" $valw
 			elif [ $valr_exists -eq 1 ]
 			then
-				printf "$i: %s°C %7s TBR ($model)" "$temp" $valr
+				printf "$i: %s°C %7s TBR $model" "$temp" $valr
 			fi
 		fi
 	else
