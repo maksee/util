@@ -24,7 +24,7 @@ do
 			drive_supp=1
 			unitw="Data Units Written"
 			unitr="Data Units Read"
-			formula="%s / 1024"
+			formula="%s"
 		elif [[ $model == "KINGSTON" ]]
 		then
 			drive_supp=1
