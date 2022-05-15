@@ -5,8 +5,34 @@ then
 	exit 0
 fi
 
+# iSCSI disks - to skip
+#alias iscsiadm='docker_execute iscsid iscsiadm'
+docker_execute ()
+{
+    local parameter="-it";
+    if [[ ! $- == *i* ]] || [ ! "$$" -eq "$BASHPID" ]; then
+        parameter="-i";
+    fi;
+    docker exec ${parameter} "$@"
+}
+iscsi=$(docker_execute iscsid iscsiadm -m session -P 3 | grep "Attached scsi disk" | awk '{print $4}')
+
 for i in $(ls /dev/sd[a-z])
 do
+	is_iscsi=0
+	for j in $iscsi
+	do
+		if [[ "$i" == "/dev/$j" ]]
+		then
+			echo "${i}: iSCSI (skip)"
+			is_iscsi=1
+			continue
+		fi
+	done
+	if [ $is_iscsi -eq 1 ]
+	then
+		continue
+	fi
 	sudo hddtemp -w $i 2>&1 | sed '/WARNING/d' | tr '\n' ' '
 	lineend=0
 	type=$(sudo hdparm -I $i | grep -i 'Nominal Media Rotation Rate' | awk -F: '{print $2}' | sed 's/^ //g')

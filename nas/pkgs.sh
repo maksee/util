@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ -e /usr/bin/dpkg ]
+then
+	: # proceeding
+else
+	exit 0
+fi
 missing_pkgs=""
 function check_package() {
         if [ $(dpkg --get-selections | grep -v deinstall | grep -c ^$1) -eq 0 ]
