@@ -24,7 +24,7 @@ do
 	do
 		if [[ "$i" == "/dev/$j" ]]
 		then
-			echo "${i}: iSCSI (skip)"
+			echo "${i}: iSCSI"
 			is_iscsi=1
 			continue
 		fi
