@@ -1,6 +1,7 @@
 #!/bin/bash
 
 $HOME/workspace/util/net/nic.sh
+$HOME/workspace/util/nas/temp.sh
 export PATH=$HOME/.local/bin:$PATH
 export EDITOR=vim
 alias t='sudo $HOME/workspace/util/nas/temp.sh'
