@@ -2,4 +2,4 @@
 
 cd $HOME/workspace/staicoin-blockchain
 . ./activate
-staicoin start all
+stai start harvester

@@ -2,4 +2,4 @@
 
 cd $HOME/workspace/flax-blockchain
 . ./activate
-flax start all
+flax start harvester

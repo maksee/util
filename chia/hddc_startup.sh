@@ -2,4 +2,4 @@
 
 cd $HOME/workspace/hddcoin-blockchain
 . ./activate
-hddcoin start all
+hddcoin start harvester
