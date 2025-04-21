@@ -1,11 +1,12 @@
 #!/bin/bash
 
-$HOME/workspace/util/net/nic.sh
-$HOME/workspace/util/nas/temp.sh
+BASE_DIR=$HOME/dev
+$BASE_DIR/util/net/nic.sh
+$BASE_DIR/util/nas/temp.sh
 export PATH=$HOME/.local/bin:$PATH
 export EDITOR=vim
-alias t='sudo $HOME/workspace/util/nas/temp.sh'
-alias n='$HOME/workspace/util/net/nic.sh'
+alias t='sudo $BASE_DIR/util/nas/temp.sh'
+alias n='$BASE_DIR/util/net/nic.sh'
 if [ -e /usr/bin/virsh ]
 then
 	virsh list --all
