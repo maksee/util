@@ -8,6 +8,6 @@ how to
 
 Add:
 
-    source $HOME/workspace/util/profile
+    source $HOME/dev/util/bashrc
 
-to .profile
+to .bashrc
